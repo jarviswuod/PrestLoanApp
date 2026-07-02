@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+
+app:
+  security:
+    username: testuser
+    password: testpass
+  jwt:
+    secret: 9f7b9eac0fd24f85b6d9f8f1f09a5d8f8f7b9eac0fd24f85b6d9f8f1f09a5d8a
+    expiration-minutes: 120

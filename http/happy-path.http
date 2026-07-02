@@ -1,0 +1,99 @@
+@baseUrl = http://localhost:8083
+@username = admin
+@password = admin123
+@token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc4MjkzNzgxNSwiZXhwIjoxNzgyOTQ1MDE1fQ.d5f0grmZbDEPxZKmpvGHOQ2lT01dHTiqtVXZqjNauc1hcVx-i309Dm1ObpPTMY3dyawAtMXD5JUCioBsOe4TIQ
+@id = 1
+@id2 = 2
+@id3 = 3
+
+### 1) Login and get JWT
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### 2) Create base loan
+# @name createLoan
+POST {{baseUrl}}/api/loans
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "principal": 1000000,
+  "annualInterestRate": 12.0,
+  "tenureMonths": 60,
+  "startDate": "2026-01-01"
+}
+
+### 3) Get loan by id
+GET {{baseUrl}}/api/loans/{{id}}
+Authorization: Bearer {{token}}
+
+### 4) Get schedule for current loan
+GET {{baseUrl}}/api/loans/{{id}}/schedule
+Authorization: Bearer {{token}}
+
+### 5) Category A - Option A (Reduce EMI, Keep Tenor)
+POST {{baseUrl}}/api/loans/{{id}}/prepayments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "installmentNumber": 24,
+  "amount": 200000,
+  "option": "REDUCE_EMI_KEEP_TENOR"
+}
+
+### 6) Category A - Option B (Reduce Tenor, Keep EMI)
+# Create another loan first so this option is tested independently
+# @name createLoanOptionB
+POST {{baseUrl}}/api/loans
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "principal": 1000000,
+  "annualInterestRate": 12.0,
+  "tenureMonths": 60,
+  "startDate": "2026-01-01"
+}
+
+### Apply Option B prepayment
+POST {{baseUrl}}/api/loans/{{id2}}/prepayments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "installmentNumber": 24,
+  "amount": 200000,
+  "option": "REDUCE_TENOR_KEEP_EMI"
+}
+
+### 7) Category A - Option C (Advance Installments)
+# Create another loan first so this option is tested independently
+# @name createLoanOptionC
+POST {{baseUrl}}/api/loans
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "principal": 1000000,
+  "annualInterestRate": 12.0,
+  "tenureMonths": 60,
+  "startDate": "2026-01-01"
+}
+
+### Apply Option C prepayment
+POST {{baseUrl}}/api/loans/{{id3}}/prepayments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "installmentNumber": 24,
+  "amount": 200000,
+  "option": "ADVANCE_INSTALLMENTS"
+}

@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: loan-engine
+  datasource:
+    url: jdbc:mysql://localhost:3306/prestloan
+    username: prestloan
+    password: prestloan
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  port: 8083
+
+app:
+  security:
+    username: admin
+    password: admin123
+  jwt:
+    secret: 8f7b9eac0fd24f85b6d9f8f1f09a5d8f8f7b9eac0fd24f85b6d9f8f1f09a5d8f
+    expiration-minutes: 120
