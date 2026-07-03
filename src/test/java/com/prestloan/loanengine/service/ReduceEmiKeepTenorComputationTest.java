@@ -4,11 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.prestloan.loanengine.api.dto.PrepaymentRequest;
-import com.prestloan.loanengine.api.dto.PrepaymentResponse;
-import com.prestloan.loanengine.domain.Loan;
-import com.prestloan.loanengine.domain.PrepaymentOption;
-import com.prestloan.loanengine.domain.ScheduleStatus;
+import com.prestloan.loanengine.dto.PrepaymentRequest;
+import com.prestloan.loanengine.dto.PrepaymentResponse;
+import com.prestloan.loanengine.model.Loan;
+import com.prestloan.loanengine.model.PrepaymentOption;
+import com.prestloan.loanengine.model.ScheduleStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ class ReduceEmiKeepTenorComputationTest {
     loan.setStartDate(LocalDate.of(2026, 1, 1));
     loan.setEmi(new BigDecimal("22244.45"));
 
-    List<com.prestloan.loanengine.domain.LoanSchedule> schedules =
+    List<com.prestloan.loanengine.model.LoanSchedule> schedules =
         new ArrayList<>(
             scheduleGenerator.generate(
                 loan,
@@ -63,7 +63,7 @@ class ReduceEmiKeepTenorComputationTest {
     loan.setId(100L);
     loan.setAnnualInterestRate(new BigDecimal("12.0"));
 
-    List<com.prestloan.loanengine.domain.LoanSchedule> schedules = new ArrayList<>();
+    List<com.prestloan.loanengine.model.LoanSchedule> schedules = new ArrayList<>();
     PrepaymentSnapshot snapshot =
         new PrepaymentSnapshot(24, new BigDecimal("200000.00"), 36, LocalDate.of(2028, 1, 1));
 

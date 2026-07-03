@@ -34,7 +34,7 @@ class JwtAuthenticationFilterTest {
     JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI("/api/loans/1");
+    request.setRequestURI("/controller/loans/1");
     MockHttpServletResponse response = new MockHttpServletResponse();
     FilterChain chain = mock(FilterChain.class);
 
@@ -52,7 +52,7 @@ class JwtAuthenticationFilterTest {
     JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI("/api/loans/1");
+    request.setRequestURI("/controller/loans/1");
     request.addHeader("Authorization", "Bearer invalid.token");
     MockHttpServletResponse response = new MockHttpServletResponse();
     FilterChain chain = mock(FilterChain.class);
@@ -75,7 +75,7 @@ class JwtAuthenticationFilterTest {
     UserDetails user = User.withUsername("testuser").password("n/a").roles("USER").build();
 
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI("/api/loans/1");
+    request.setRequestURI("/controller/loans/1");
     request.addHeader("Authorization", "Bearer token-123");
     MockHttpServletResponse response = new MockHttpServletResponse();
     FilterChain chain = mock(FilterChain.class);
@@ -102,7 +102,7 @@ class JwtAuthenticationFilterTest {
         .setAuthentication(new UsernamePasswordAuthenticationToken("existing", null));
 
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI("/api/loans/1");
+    request.setRequestURI("/controller/loans/1");
     request.addHeader("Authorization", "Bearer token-123");
     MockHttpServletResponse response = new MockHttpServletResponse();
     FilterChain chain = mock(FilterChain.class);

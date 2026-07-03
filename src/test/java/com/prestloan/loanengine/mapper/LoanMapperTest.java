@@ -2,9 +2,9 @@ package com.prestloan.loanengine.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.prestloan.loanengine.api.dto.CreateLoanRequest;
-import com.prestloan.loanengine.domain.Loan;
-import com.prestloan.loanengine.domain.LoanStatus;
+import com.prestloan.loanengine.dto.CreateLoanRequest;
+import com.prestloan.loanengine.model.Loan;
+import com.prestloan.loanengine.model.LoanStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,7 @@
 package com.prestloan.loanengine.repository;
 
-import com.prestloan.loanengine.domain.LoanTransaction;
+import com.prestloan.loanengine.model.LoanTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface LoanTransactionRepository extends JpaRepository<LoanTransaction, Long> {}
+public interface LoanTransactionRepository extends JpaRepository<LoanTransaction, Long> {
+}

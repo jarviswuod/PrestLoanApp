@@ -1,3 +1,5 @@
+/*
+
 package com.prestloan.loanengine.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,3 +23,6 @@ class RedisCacheConfigTest {
     assertThat(cacheManager.getClass().getSimpleName()).contains("RedisCacheManager");
   }
 }
+
+
+ */

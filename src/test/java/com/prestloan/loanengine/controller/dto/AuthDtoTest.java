@@ -1,7 +1,9 @@
-package com.prestloan.loanengine.api.dto;
+package com.prestloan.loanengine.controller.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.prestloan.loanengine.dto.AuthRequest;
+import com.prestloan.loanengine.dto.AuthResponse;
 import org.junit.jupiter.api.Test;
 
 class AuthDtoTest {

@@ -25,49 +25,53 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  @Lazy private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Lazy
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authenticationProvider(authenticationProvider)
-        .exceptionHandling(
-            ex ->
-                ex.authenticationEntryPoint(
-                    (request, response, authException) ->
-                        response.sendError(
-                            jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED,
-                            "Unauthorized")))
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/api/auth/**")
-                    .permitAll()
-                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/actuator/health")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-  }
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .exceptionHandling(
+                        ex ->
+                                ex.authenticationEntryPoint(
+                                        (request, response, authException) ->
+                                                response.sendError(
+                                                        jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED,
+                                                        "Unauthorized")))
+                .authorizeHttpRequests(
+                        auth ->
+                                auth.requestMatchers("/api/auth/**")
+                                        .permitAll()
+                                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**")
+                                        .permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/actuator/health")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-  @Bean
-  public AuthenticationProvider authenticationProvider(
-      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-    provider.setUserDetailsService(userDetailsService);
-    provider.setPasswordEncoder(passwordEncoder);
-    return provider;
-  }
+        return http.build();
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-      throws Exception {
-    return config.getAuthenticationManager();
-  }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(
+            UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+    }
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
+        return config.getAuthenticationManager();
+    }
 }

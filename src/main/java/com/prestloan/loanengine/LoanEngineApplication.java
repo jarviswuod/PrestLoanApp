@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableCaching
 public class LoanEngineApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(LoanEngineApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(LoanEngineApplication.class, args);
+    }
 }

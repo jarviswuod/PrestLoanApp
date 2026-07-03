@@ -1,16 +1,13 @@
 spring:
   application:
     name: loan-engine
-  cache:
-    type: redis
+
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/prestloan}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     open-in-view: false
     hibernate:
@@ -18,6 +15,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  cache:
+    type: redis
+    redis:
+      key-prefix: "prestloan:"
+      time-to-live: 10m
+
   flyway:
     enabled: true
 

@@ -1,9 +1,10 @@
-package com.prestloan.loanengine.api.dto;
+package com.prestloan.loanengine.dto;
 
-import com.prestloan.loanengine.domain.LoanStatus;
+import com.prestloan.loanengine.model.LoanStatus;
+import lombok.Builder;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import lombok.Builder;
 
 @Builder
 public record LoanResponse(
@@ -15,5 +16,6 @@ public record LoanResponse(
         BigDecimal originalEmi,
         BigDecimal emi,
         LocalDate startDate,
-        LoanStatus status) {
+        LoanStatus status
+) {
 }

@@ -1,4 +1,4 @@
-package com.prestloan.loanengine.api;
+package com.prestloan.loanengine.controller;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prestloan.loanengine.domain.PrepaymentOption;
+import com.prestloan.loanengine.model.PrepaymentOption;
 import com.prestloan.loanengine.repository.LoanRepository;
 import com.prestloan.loanengine.repository.LoanScheduleRepository;
 import java.math.BigDecimal;

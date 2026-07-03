@@ -3,11 +3,11 @@ package com.prestloan.loanengine.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.prestloan.loanengine.api.dto.PrepaymentRequest;
-import com.prestloan.loanengine.api.dto.PrepaymentResponse;
-import com.prestloan.loanengine.domain.Loan;
-import com.prestloan.loanengine.domain.LoanSchedule;
-import com.prestloan.loanengine.domain.PrepaymentOption;
+import com.prestloan.loanengine.dto.PrepaymentRequest;
+import com.prestloan.loanengine.dto.PrepaymentResponse;
+import com.prestloan.loanengine.model.Loan;
+import com.prestloan.loanengine.model.LoanSchedule;
+import com.prestloan.loanengine.model.PrepaymentOption;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

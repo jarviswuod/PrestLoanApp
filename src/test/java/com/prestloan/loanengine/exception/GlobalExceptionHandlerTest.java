@@ -1,4 +1,4 @@
-package com.prestloan.loanengine.api.error;
+package com.prestloan.loanengine.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -25,7 +25,7 @@ class GlobalExceptionHandlerTest {
 
   private HttpServletRequest request() {
     HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn("/api/loans");
+    when(request.getRequestURI()).thenReturn("/controller/loans");
     return request;
   }
 
