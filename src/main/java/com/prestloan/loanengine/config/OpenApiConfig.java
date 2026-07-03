@@ -11,18 +11,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI loanOpenApi() {
-        return new OpenAPI().info(new Info()
+  @Bean
+  public OpenAPI loanOpenApi() {
+    return new OpenAPI()
+        .info(
+            new Info()
                 .title("Loan Settlement & Prepayment Engine API")
                 .description("Category A implementation for principal prepayment strategies")
                 .version("v1")
                 .contact(new Contact().name("PrestLoan Engineering")))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-                .schemaRequirement("bearerAuth", new SecurityScheme()
-                        .name("bearerAuth")
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT"));
-    }
+        .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+        .schemaRequirement(
+            "bearerAuth",
+            new SecurityScheme()
+                .name("bearerAuth")
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT"));
+  }
 }

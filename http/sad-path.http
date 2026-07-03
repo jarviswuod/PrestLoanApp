@@ -1,8 +1,7 @@
-@baseUrl = http://localhost:8083
+@baseUrl = http://localhost:8080
 @username = admin
-@password = admin123
-@token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc4MjkzODM1OCwiZXhwIjoxNzgyOTQ1NTU4fQ.YXzPA0wqh4qZ6C2PZihJT2Mfl8CI5t4nvY9pneC613QQB9MzQUdRwxzbpXfBfiOlJLPLeRb36BBCutKr7NYaZA
-@id = 5
+@password = change-me
+
 ### 1) Missing token -> should return 401
 GET {{baseUrl}}/api/loans/1/schedule
 
@@ -27,7 +26,7 @@ Content-Type: application/json
 
 ### 4) Create loan with invalid payload (negative principal) -> should return 400
 POST {{baseUrl}}/api/loans
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -39,7 +38,7 @@ Content-Type: application/json
 
 ### 5) Create loan with invalid payload (missing startDate) -> should return 400
 POST {{baseUrl}}/api/loans
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -51,7 +50,7 @@ Content-Type: application/json
 ### 6) Create a valid loan for prepayment sad-path tests
 # @name createLoan
 POST {{baseUrl}}/api/loans
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -62,8 +61,8 @@ Content-Type: application/json
 }
 
 ### 7) Invalid installment (0) -> should return 400
-POST {{baseUrl}}/api/loans/{{id}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -73,8 +72,8 @@ Content-Type: application/json
 }
 
 ### 8) Negative prepayment amount -> should return 400
-POST {{baseUrl}}/api/loans/{{id}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -84,8 +83,8 @@ Content-Type: application/json
 }
 
 ### 9) Excess prepayment amount for non-advance option -> should return 400
-POST {{baseUrl}}/api/loans/{{id}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -96,11 +95,11 @@ Content-Type: application/json
 
 ### 10) Loan not found -> should return 404
 GET {{baseUrl}}/api/loans/999999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ### 11) Invalid enum option -> should return 400
-POST {{baseUrl}}/api/loans/{{id}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {

@@ -1,10 +1,9 @@
-@baseUrl = http://localhost:8083
+@baseUrl = http://localhost:8080
 @username = admin
-@password = admin123
-@token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc4MjkzNzgxNSwiZXhwIjoxNzgyOTQ1MDE1fQ.d5f0grmZbDEPxZKmpvGHOQ2lT01dHTiqtVXZqjNauc1hcVx-i309Dm1ObpPTMY3dyawAtMXD5JUCioBsOe4TIQ
-@id = 1
-@id2 = 2
-@id3 = 3
+@password = change-me
+
+# installmentNumber in prepayment requests means the last fully paid installment
+# after which the prepayment is applied.
 
 ### 1) Login and get JWT
 # @name login
@@ -19,7 +18,7 @@ Content-Type: application/json
 ### 2) Create base loan
 # @name createLoan
 POST {{baseUrl}}/api/loans
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -30,16 +29,16 @@ Content-Type: application/json
 }
 
 ### 3) Get loan by id
-GET {{baseUrl}}/api/loans/{{id}}
-Authorization: Bearer {{token}}
+GET {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ### 4) Get schedule for current loan
-GET {{baseUrl}}/api/loans/{{id}}/schedule
-Authorization: Bearer {{token}}
+GET {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}/schedule
+Authorization: Bearer {{login.response.body.$.token}}
 
 ### 5) Category A - Option A (Reduce EMI, Keep Tenor)
-POST {{baseUrl}}/api/loans/{{id}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoan.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -52,7 +51,7 @@ Content-Type: application/json
 # Create another loan first so this option is tested independently
 # @name createLoanOptionB
 POST {{baseUrl}}/api/loans
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -63,8 +62,8 @@ Content-Type: application/json
 }
 
 ### Apply Option B prepayment
-POST {{baseUrl}}/api/loans/{{id2}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoanOptionB.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -77,7 +76,7 @@ Content-Type: application/json
 # Create another loan first so this option is tested independently
 # @name createLoanOptionC
 POST {{baseUrl}}/api/loans
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -88,8 +87,8 @@ Content-Type: application/json
 }
 
 ### Apply Option C prepayment
-POST {{baseUrl}}/api/loans/{{id3}}/prepayments
-Authorization: Bearer {{token}}
+POST {{baseUrl}}/api/loans/{{createLoanOptionC.response.body.$.id}}/prepayments
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {

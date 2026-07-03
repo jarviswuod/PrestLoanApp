@@ -12,6 +12,8 @@ This project implements all three Category A options:
 
 The implementation is generic for any valid installment number, not hardcoded to month 24.
 
+For prepayment requests, `installmentNumber` is interpreted as the last fully paid installment after which the prepayment is applied. This aligns the engine with the sample-style month 24 outstanding balance and 36 remaining months.
+
 ## Tech Stack
 
 - Java 21
@@ -43,9 +45,44 @@ docker compose up -d
 The app expects:
 
 - DB: `prestloan`
-- User: `prestloan`
-- Password: `prestloan`
+- User: value from environment variable `DB_USERNAME`
+- Password: value from environment variable `DB_PASSWORD`
 - Port: `3306`
+
+Redis is expected at values provided by `REDIS_HOST` and `REDIS_PORT`.
+
+## Environment Variables
+
+The application no longer ships hardcoded secrets in runtime config.
+
+Required variables:
+
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `APP_SECURITY_USERNAME`
+- `APP_SECURITY_PASSWORD`
+- `APP_JWT_SECRET`
+
+Optional variables:
+
+- `DB_URL` (default: `jdbc:mysql://localhost:3306/prestloan`)
+- `REDIS_HOST` (default: `localhost`)
+- `REDIS_PORT` (default: `6379`)
+- `APP_JWT_EXPIRATION_MINUTES` (default: `120`)
+
+For local development, use `.env.example` as a template.
+
+## Security Profile Behavior
+
+- Non-production profiles (`!prod`): uses in-memory user details service.
+- Production profile (`prod`): uses JDBC-backed user details (`users` and `authorities` tables).
+
+Flyway migration `V4__create_security_user_tables.sql` creates the required security tables.
+
+When `prod` is active, a bootstrap user is created once (if missing) using:
+
+- `APP_SECURITY_USERNAME`
+- `APP_SECURITY_PASSWORD`
 
 ## Run the Application
 
@@ -53,6 +90,12 @@ If Maven is installed locally:
 
 ```bash
 mvn spring-boot:run
+```
+
+Run with production profile:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 Swagger UI:
@@ -67,10 +110,10 @@ OpenAPI JSON:
 
 All loan endpoints are secured with JWT Bearer authentication.
 
-Default credentials from configuration:
+Login credentials are provided via environment variables:
 
-- Username: `admin`
-- Password: `admin123`
+- Username: `APP_SECURITY_USERNAME`
+- Password: `APP_SECURITY_PASSWORD`
 
 Generate token first:
 
@@ -78,8 +121,8 @@ Generate token first:
 
 ```json
 {
-  "username": "admin",
-  "password": "admin123"
+  "username": "<APP_SECURITY_USERNAME>",
+  "password": "<APP_SECURITY_PASSWORD>"
 }
 ```
 

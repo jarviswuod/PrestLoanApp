@@ -6,55 +6,76 @@ import com.prestloan.loanengine.domain.Loan;
 import com.prestloan.loanengine.domain.LoanSchedule;
 import com.prestloan.loanengine.domain.PrepaymentOption;
 import com.prestloan.loanengine.domain.ScheduleStatus;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ReduceTenorKeepEmiComputation extends AbstractPrepaymentComputation {
 
-    private final ScheduleGenerator scheduleGenerator;
+  private final ScheduleGenerator scheduleGenerator;
 
-    public ReduceTenorKeepEmiComputation(ScheduleGenerator scheduleGenerator) {
-        this.scheduleGenerator = scheduleGenerator;
+  @Override
+  public boolean supports(PrepaymentRequest request) {
+    return request.option() == PrepaymentOption.REDUCE_TENOR_KEEP_EMI;
+  }
+
+  @Override
+  public PrepaymentResponse apply(
+      Loan loan,
+      PrepaymentSnapshot snapshot,
+      List<LoanSchedule> schedules,
+      PrepaymentRequest request) {
+    int installment = snapshot.paidThroughInstallmentNumber();
+    BigDecimal before = snapshot.outstandingPrincipal();
+    BigDecimal after = LoanMath.roundMoney(before.subtract(request.amount()));
+
+    if (after.compareTo(BigDecimal.ZERO) == 0) {
+      schedules.removeIf(s -> s.getInstallmentNumber() > installment);
+      return PrepaymentResponse.builder()
+          .loanId(loan.getId())
+          .option(request.option())
+          .installmentNumber(installment)
+          .prepaymentAmount(request.amount())
+          .outstandingBefore(before)
+          .outstandingAfter(after)
+          .newEmi(loan.getEmi())
+          .remainingTenorMonths(0)
+          .advancedInstallments(0)
+          .notes("Loan fully closed by prepayment")
+          .build();
     }
 
-    @Override
-    public boolean supports(PrepaymentRequest request) {
-        return request.option() == PrepaymentOption.REDUCE_TENOR_KEEP_EMI;
-    }
+    BigDecimal monthlyRate = LoanMath.monthlyRate(loan.getAnnualInterestRate());
+    int newTenor = LoanMath.calculateTenor(after, monthlyRate, loan.getEmi());
 
-    @Override
-    public PrepaymentResponse apply(Loan loan, List<LoanSchedule> schedules, PrepaymentRequest request) {
-        int installment = request.installmentNumber();
-        BigDecimal before = outstandingBefore(schedules, installment);
-        BigDecimal after = LoanMath.roundMoney(before.subtract(request.amount()));
+    List<LoanSchedule> newRows =
+        scheduleGenerator.generate(
+            loan,
+            installment + 1,
+            newTenor,
+            snapshot.nextDueDate(),
+            after,
+            loan.getEmi(),
+            ScheduleStatus.ADJUSTED);
 
-        if (after.compareTo(BigDecimal.ZERO) == 0) {
-            schedules.removeIf(s -> s.getInstallmentNumber() > installment);
-            return new PrepaymentResponse(loan.getId(), request.option(), installment, request.amount(), before, after,
-                    loan.getEmi(), 0, 0, "Loan fully closed by prepayment");
-        }
+    schedules.removeIf(s -> s.getInstallmentNumber() > installment);
+    schedules.addAll(newRows);
+    sortByInstallment(schedules);
 
-        BigDecimal monthlyRate = LoanMath.monthlyRate(loan.getAnnualInterestRate());
-        int newTenor = LoanMath.calculateTenor(after, monthlyRate, loan.getEmi());
-
-        List<LoanSchedule> newRows = scheduleGenerator.generate(
-                loan,
-                installment + 1,
-                newTenor,
-                nextDueDate(loan, schedules, installment),
-                after,
-                loan.getEmi(),
-                ScheduleStatus.ADJUSTED
-        );
-
-        schedules.removeIf(s -> s.getInstallmentNumber() > installment);
-        schedules.addAll(newRows);
-        sortByInstallment(schedules);
-
-        return new PrepaymentResponse(loan.getId(), request.option(), installment, request.amount(), before, after,
-                loan.getEmi(), newTenor, 0, "Tenor reduced, EMI unchanged");
-    }
+    return PrepaymentResponse.builder()
+      .loanId(loan.getId())
+      .option(request.option())
+      .installmentNumber(installment)
+      .prepaymentAmount(request.amount())
+      .outstandingBefore(before)
+      .outstandingAfter(after)
+      .newEmi(loan.getEmi())
+      .remainingTenorMonths(newTenor)
+      .advancedInstallments(0)
+      .notes("Tenor reduced, EMI unchanged")
+      .build();
+  }
 }

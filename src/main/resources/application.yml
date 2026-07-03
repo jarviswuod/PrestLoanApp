@@ -1,10 +1,16 @@
 spring:
   application:
     name: loan-engine
+  cache:
+    type: redis
   datasource:
-    url: jdbc:mysql://localhost:3306/prestloan
-    username: prestloan
-    password: prestloan
+    url: ${DB_URL:jdbc:mysql://localhost:3306/prestloan}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
   jpa:
     open-in-view: false
     hibernate:
@@ -22,12 +28,12 @@ springdoc:
     path: /swagger-ui.html
 
 server:
-  port: 8083
+  port: 8080
 
 app:
   security:
-    username: admin
-    password: admin123
+    username: ${APP_SECURITY_USERNAME}
+    password: ${APP_SECURITY_PASSWORD}
   jwt:
-    secret: 8f7b9eac0fd24f85b6d9f8f1f09a5d8f8f7b9eac0fd24f85b6d9f8f1f09a5d8f
-    expiration-minutes: 120
+    secret: ${APP_JWT_SECRET}
+    expiration-minutes: ${APP_JWT_EXPIRATION_MINUTES:120}
